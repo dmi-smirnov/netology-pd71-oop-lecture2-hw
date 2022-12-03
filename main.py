@@ -80,6 +80,20 @@ class Reviewer(Mentor):
         else:
             return 'Ошибка'
 
+def get_average_grade(graded_list, course_name):
+    grades_sum = 0
+    grades_amount = 0
+    for graded in graded_list:
+        if not isinstance(graded, Graded):
+            print('Error: one element of graded_list is not Graded')
+            return
+        if not course_name in graded.grades.keys():
+            print(f'Error: dict grades of one element of graded_list does not contain a key {course_name}')
+            return
+        grades_sum += sum(graded.grades[course_name])
+        grades_amount += len(graded.grades[course_name])
+    return round(grades_sum / grades_amount, 1)
+
 student1 = Student(
     'student1_name',
     'student1_surname',
@@ -101,6 +115,7 @@ lecturer1.courses_attached.append('Python')
 lecturer1.courses_attached.append('Введение в программирование')
 
 lecturer2 = Lecturer('lecturer2_name', 'lecturer2_surname')
+lecturer2.courses_attached.append('Python')
 lecturer2.courses_attached.append('Git')
 
 reviewer1 = Reviewer('reviewer1_name', 'reviewer1_surname')
@@ -122,9 +137,11 @@ reviewer2.rate_hw(student2, 'Git', 8)
 reviewer2.rate_hw(student1, 'Git', 10)
 
 student1.rate_lecturer(lecturer1, 'Python', 9)
+student1.rate_lecturer(lecturer2, 'Python', 7)
 student1.rate_lecturer(lecturer2, 'Git', 5)
 
 student2.rate_lecturer(lecturer1, 'Python', 10)
+student2.rate_lecturer(lecturer2, 'Python', 8)
 student2.rate_lecturer(lecturer2, 'Git', 6)
 
 print(student1, student2,
@@ -140,3 +157,11 @@ print('lecturer1 average grade:', lecturer1.get_average_grade())
 print('lecturer2 average grade:', lecturer2.get_average_grade())
 print('lecturer1 < lecturer2:', lecturer1 < lecturer2, end='\n\n')
 
+print('Средняя оценка за ДЗ у student1 и student2 по курсу Python:',
+    get_average_grade([student1, student2], 'Python'), end='\n\n')
+
+print('Средняя оценка за ДЗ у student1 и student2 по курсу Git:',
+    get_average_grade([student1, student2], 'Git'), end='\n\n')
+
+print('Средняя оценка за лекции у lecturer1 и lecturer2 по курсу Python:',
+    get_average_grade([lecturer1, lecturer2], 'Python'), end='\n\n')
